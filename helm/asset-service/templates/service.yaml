@@ -1,0 +1,20 @@
+{{- if .Values.assetService.enabled }}
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "asset-service.fullname" . }}
+  labels:
+    {{- include "asset-service.labels" . | nindent 4 }}
+
+spec:
+  type: {{ .Values.assetService.service.type }}
+
+  selector:
+    {{- include "asset-service.selectorLabels" . | nindent 4 }}
+
+  ports:
+    - protocol: TCP
+      port: {{ .Values.assetService.service.port }}
+      targetPort: {{ .Values.assetService.service.targetPort }}
+{{- end }}

@@ -1,0 +1,18 @@
+{{- if .Values.redisIncident.enabled }}
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "redis-incident.fullname" . }}
+  labels:
+    {{- include "redis-incident.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.redisIncident.service.type }}
+  selector:
+    {{- include "redis-incident.selectorLabels" . | nindent 4 }}
+  ports:
+    - protocol: TCP
+      port: {{ .Values.redisIncident.service.port }}
+      targetPort: {{ .Values.redisIncident.service.port }}
+
+{{- end }}

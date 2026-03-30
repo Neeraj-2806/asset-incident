@@ -1,0 +1,42 @@
+{{- if .Values.assetService.enabled }}
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "asset-service.fullname" . }}
+  labels:
+    {{- include "asset-service.labels" . | nindent 4 }}
+
+spec:
+  replicas: {{ .Values.assetService.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "asset-service.selectorLabels" . | nindent 6 }}
+
+  template:
+    metadata:
+      labels:
+        {{- include "asset-service.selectorLabels" . | nindent 8 }}
+
+    spec:
+      containers:
+        - name: asset-service-ctr
+          image: "{{ .Values.assetService.image.repository }}:{{ .Values.assetService.image.tag }}"
+          imagePullPolicy: {{ .Values.assetService.image.pullPolicy }}
+
+          ports:
+            - containerPort: {{ .Values.assetService.service.port }}
+
+          env:
+            {{- range $key, $value := .Values.assetService.env }}
+            - name: {{ $key }}
+              valueFrom:
+                configMapKeyRef:
+                  name: asset-service-configmap
+                  key: {{ $key }}
+            {{- end }}
+
+          resources:
+            {{- toYaml .Values.assetService.resources | nindent 12 }}
+
+{{- end }}

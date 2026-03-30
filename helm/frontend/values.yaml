@@ -1,0 +1,42 @@
+frontend:
+  enabled: true
+  replicaCount: 1
+
+  image:
+    repository: neeraj2806/frontend
+    tag: "v1"
+    pullPolicy: IfNotPresent
+
+  service:
+    type: NodePort
+    port: 80
+    nodePort: 30070
+
+  resources:
+    requests:
+      memory: "128Mi"
+      cpu: "100m"
+    limits:
+      memory: "256Mi"
+      cpu: "200m"
+
+  livenessProbe:
+    enabled: false
+    path: /
+    initialDelaySeconds: 10
+    periodSeconds: 10
+
+  readinessProbe:
+    enabled: false
+    path: /
+    initialDelaySeconds: 5
+    periodSeconds: 5
+
+  autoScaling:
+    enabled: false
+    minReplicas: 1
+    maxReplicas: 4
+    targetCPUUtilizationPercentage: 80
+  
+  nameOverride: ""
+  fullnameOverride: ""

@@ -1,0 +1,63 @@
+{{- if .Values.redisAsset.enabled }}
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "redis-asset.fullname" . }}
+  labels:
+    {{- include "redis-asset.labels" . | nindent 4 }}
+
+spec:
+  replicas: {{ .Values.redisAsset.replicaCount }}
+
+  selector:
+    matchLabels:
+      {{- include "redis-asset.selectorLabels" . | nindent 6 }}
+
+  template:
+    metadata:
+      labels:
+        {{- include "redis-asset.selectorLabels" . | nindent 8 }}
+
+    spec:
+      containers:
+        - name: redis-asset-ctr
+          image: "{{ .Values.redisAsset.image.repository }}:{{ .Values.redisAsset.image.tag }}"
+          imagePullPolicy: {{ .Values.redisAsset.image.pullPolicy }}
+
+          ports:
+            - containerPort: {{ .Values.redisAsset.service.port }}
+
+          resources:
+            {{- toYaml .Values.redisAsset.resources | nindent 12 }}
+
+          {{- if .Values.redisAsset.persistence.enabled }}
+          volumeMounts:
+            - name: redis-asset-volume
+              mountPath: /data
+          {{- end }}
+
+          {{- if .Values.redisAsset.livenessProbe.enabled }}
+          livenessProbe:
+            tcpSocket:
+              port: {{ .Values.redisAsset.service.port }}
+            initialDelaySeconds: {{ .Values.redisAsset.livenessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.redisAsset.livenessProbe.periodSeconds }}
+          {{- end }}
+
+          {{- if .Values.redisAsset.readinessProbe.enabled }}
+          readinessProbe:
+            tcpSocket:
+              port: {{ .Values.redisAsset.service.port }}
+            initialDelaySeconds: {{ .Values.redisAsset.readinessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.redisAsset.readinessProbe.periodSeconds }}
+          {{- end }}
+
+      {{- if .Values.redisAsset.persistence.enabled }}
+      volumes:
+        - name: redis-asset-volume
+          persistentVolumeClaim:
+            claimName: redis-asset-pvc
+      {{- end }}
+
+{{- end }}

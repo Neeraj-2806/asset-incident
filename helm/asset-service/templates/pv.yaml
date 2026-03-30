@@ -1,0 +1,15 @@
+{{- if .Values.redisAsset.persistence.enabled }}
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: redis-asset-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ .Values.redisAsset.persistence.size }}
+  storageClassName: {{ .Values.redisAsset.persistence.storageClass }}
+
+{{- end }}

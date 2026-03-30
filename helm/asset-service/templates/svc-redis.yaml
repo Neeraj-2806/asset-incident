@@ -1,0 +1,21 @@
+{{- if .Values.redisAsset.enabled }}
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "redis-asset.fullname" . }}
+  labels:
+    {{- include "redis-asset.labels" . | nindent 4 }}
+
+spec:
+  type: {{ .Values.redisAsset.service.type }}
+
+  ports:
+    - protocol: TCP
+      port: {{ .Values.redisAsset.service.port }}
+      targetPort: {{ .Values.redisAsset.service.port }}
+
+  selector:
+    {{- include "redis-asset.selectorLabels" . | nindent 4 }}
+
+{{- end }}

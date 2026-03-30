@@ -1,0 +1,17 @@
+{{- if and .Values.redisIncident.enabled .Values.redisIncident.persistence.enabled }}
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: redis-incident-pvc
+  labels:
+    {{- include "redis-incident.labels" . | nindent 4 }}
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: {{ .Values.redisIncident.persistence.storageClass }}
+  resources:
+    requests:
+      storage: {{ .Values.redisIncident.persistence.size }}
+
+{{- end }}

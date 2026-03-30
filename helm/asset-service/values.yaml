@@ -1,0 +1,79 @@
+assetService:
+  enabled: true
+  replicaCount: 1
+
+  image:
+    repository: neeraj2806/asset
+    tag: "v1"
+    pullPolicy: IfNotPresent
+
+  service:
+    type: ClusterIP
+    port: 5001
+
+  resources:
+    requests:
+      memory: "128Mi"
+      cpu: "100m"
+    limits:
+      memory: "256Mi"
+      cpu: "200m"
+
+  env:
+    REDIS_PORT: "6379"
+    REDIS_HOST: "redis-asset-service"
+    INCIDENT_SERVICE_URL: "http://incident-service:5002"
+
+  livenessProbe:
+    enabled: false
+    path: /
+    initialDelaySeconds: 10
+    periodSeconds: 10
+
+  readinessProbe:
+    enabled: false
+    path: /
+    initialDelaySeconds: 5
+    periodSeconds: 5
+
+nameOverride: ""
+fullnameOverride: "asset-service"
+
+redisAsset:
+  enabled: true
+  replicaCount: 1
+
+  image:
+    repository: redis
+    tag: "latest"
+    pullPolicy: IfNotPresent
+
+  service:
+    type: ClusterIP
+    port: 6379
+
+  persistence:
+    enabled: true
+    storageClass: "standard"
+    size: 1Gi
+
+  resources:
+    requests:
+      memory: "64Mi"
+      cpu: "50m"
+    limits:
+      memory: "128Mi"
+      cpu: "100m"
+
+  livenessProbe:
+    enabled: false
+    path: /
+    initialDelaySeconds: 10
+    periodSeconds: 10
+
+  readinessProbe:
+    enabled: false
+    path: /
+    initialDelaySeconds: 5
+    periodSeconds: 5
+

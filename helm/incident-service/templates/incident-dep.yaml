@@ -1,0 +1,50 @@
+{{- if .Values.incidentService.enabled }}
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "incident-service.fullname" . }}
+  labels:
+    {{- include "incident-service.labels" . | nindent 4 }}
+
+spec:
+  replicas: {{ .Values.incidentService.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "incident-service.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "incident-service.selectorLabels" . | nindent 8 }}
+    spec:
+      containers:
+        - name: incident-ctr
+          image: "{{ .Values.incidentService.image.repository }}:{{ .Values.incidentService.image.tag }}"
+          imagePullPolicy: {{ .Values.incidentService.image.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.incidentService.service.port }}
+          env:
+            {{- range $key, $value := .Values.incidentService.env }}
+            - name: {{ $key }}
+              value: "{{ $value }}"
+            {{- end }}
+          resources:
+            {{- toYaml .Values.incidentService.resources | nindent 12 }}
+          {{- if .Values.incidentService.livenessProbe.enabled }}
+          livenessProbe:
+            httpGet:
+              path: {{ .Values.incidentService.livenessProbe.path }}
+              port: {{ .Values.incidentService.service.port }}
+            initialDelaySeconds: {{ .Values.incidentService.livenessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.incidentService.livenessProbe.periodSeconds }}
+          {{- end }}
+          {{- if .Values.incidentService.readinessProbe.enabled }}
+          readinessProbe:
+            httpGet:
+              path: {{ .Values.incidentService.readinessProbe.path }}
+              port: {{ .Values.incidentService.service.port }}
+            initialDelaySeconds: {{ .Values.incidentService.readinessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.incidentService.readinessProbe.periodSeconds }}
+          {{- end }}
+
+{{- end }}

@@ -1,0 +1,15 @@
+{{- if .Values.assetService.enabled }}
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: asset-service-configmap
+  labels:
+    {{- include "asset-service.labels" . | nindent 4 }}
+
+data:
+  {{- range $key, $value := .Values.assetService.env }}
+  {{ $key }}: "{{ $value }}"
+  {{- end }}
+
+{{- end }}

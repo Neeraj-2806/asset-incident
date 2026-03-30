@@ -1,0 +1,57 @@
+{{- if .Values.redisIncident.enabled }}
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "redis-incident.fullname" . }}
+  labels:
+    {{- include "redis-incident.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.redisIncident.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "redis-incident.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "redis-incident.selectorLabels" . | nindent 8 }}
+    spec:
+      containers:
+        - name: redis-incident-ctr
+          image: "{{ .Values.redisIncident.image.repository }}:{{ .Values.redisIncident.image.tag }}"
+          imagePullPolicy: {{ .Values.redisIncident.image.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.redisIncident.service.port }}
+          resources:
+            {{- toYaml .Values.redisIncident.resources | nindent 12 }}
+
+          {{- if .Values.redisIncident.persistence.enabled }}
+          volumeMounts:
+            - name: redis-incident-volume
+              mountPath: /data
+          {{- end }}
+
+          {{- if .Values.redisIncident.livenessProbe.enabled }}
+          livenessProbe:
+            tcpSocket:
+              port: {{ .Values.redisIncident.service.port }}
+            initialDelaySeconds: {{ .Values.redisIncident.livenessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.redisIncident.livenessProbe.periodSeconds }}
+          {{- end }}
+
+          {{- if .Values.redisIncident.readinessProbe.enabled }}
+          readinessProbe:
+            tcpSocket:
+              port: {{ .Values.redisIncident.service.port }}
+            initialDelaySeconds: {{ .Values.redisIncident.readinessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.redisIncident.readinessProbe.periodSeconds }}
+          {{- end }}
+
+      {{- if .Values.redisIncident.persistence.enabled }}
+      volumes:
+        - name: redis-incident-volume
+          persistentVolumeClaim:
+            claimName: redis-incident-pvc
+      {{- end }}
+
+{{- end }}

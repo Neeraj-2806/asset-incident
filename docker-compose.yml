@@ -1,0 +1,58 @@
+version: "3.8"
+services:
+  # ── Redis for asset-service ──
+  redis-asset-db:
+    image: redis
+    container_name: redis-asset-ctr
+    volumes:
+      - redis-asset-data:/data
+
+  # ── Redis for incident-service ──
+  redis-incident-db:
+    image: redis
+    container_name: redis-incident-ctr
+    volumes:
+      - redis-incident-data:/data
+
+  # ── Asset Microservice ──
+  asset-service:
+    build:
+      context: ./asset-service
+    container_name: asset-ctr
+    ports:
+      - "5001:5001"
+    environment:
+      REDIS_HOST: redis-asset-db
+      REDIS_PORT: 6379
+      INCIDENT_SERVICE_URL: http://incident-service:5002
+    depends_on:
+      - redis-asset-db
+      - incident-service
+
+  # ── Incident Microservice ──
+  incident-service:
+    build:
+      context: ./incident-service
+    container_name: incident-ctr
+    ports:
+      - "5002:5002"
+    environment:
+      REDIS_HOST: redis-incident-db  
+      REDIS_PORT: 6379
+    depends_on:
+      - redis-incident-db            
+
+  # ── Frontend (React + Nginx) ──
+  frontend:
+    build:
+      context: ./frontend
+    container_name: frontend-ctr
+    ports:
+      - "80:80"
+    depends_on:
+      - asset-service
+      - incident-service
+
+volumes:
+  redis-asset-data:
+  redis-incident-data:
