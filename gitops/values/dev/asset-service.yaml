@@ -1,9 +1,6 @@
 assetService:
   enabled: true
   replicaCount: 3
-
   image:
-    tag: "dev"
-
-  service:
-    type: ClusterIP
+    repository: neeraj2806/asset
+    tag: dev

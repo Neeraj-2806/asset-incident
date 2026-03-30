@@ -1,3 +1,6 @@
 incidentService:
- enabled: true
- replicaCount: 2
+  enabled: true
+  replicaCount: 2
+  image:
+    repository: neeraj2806/incident
+    tag: dev
