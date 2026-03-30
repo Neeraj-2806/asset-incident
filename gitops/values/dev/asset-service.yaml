@@ -1,4 +1,5 @@
 assetService:
+  enabled: true
   replicaCount: 3
 
   image:

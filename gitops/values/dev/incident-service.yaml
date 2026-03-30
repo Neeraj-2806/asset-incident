@@ -1,0 +1,3 @@
+incidentService:
+ enabled: true
+ replicaCount: 2
