@@ -1,0 +1,8 @@
+assetService:
+  replicaCount: 3
+
+  image:
+    tag: "dev"
+
+  service:
+    type: ClusterIP

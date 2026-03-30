@@ -1,0 +1,21 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: root-app-dev
+  namespace: argocd
+spec:
+  project: default
+
+  source:
+    repoURL: https://github.com/Neeraj-2806/asset-incident.git   # 🔥 UPDATE THIS
+    targetRevision: main                                      # or HEAD
+    path: gitops/clusters/dev                                 # 🔥 VERY IMPORTANT
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: argocd
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true

@@ -1,0 +1,24 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: incident-service
+  namespace: argocd
+spec:
+  project: default
+
+  source:
+    repoURL: https://github.com/Neeraj-2806/asset-incident.git
+    targetRevision: main
+    path: helm/incident-service
+    helm:
+      valueFiles:
+        - ../../values/dev/incident-service.yaml
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: default
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
