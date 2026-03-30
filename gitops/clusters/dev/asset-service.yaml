@@ -12,7 +12,7 @@ spec:
     path: helm/asset-service
     helm:
       valueFiles:
-        - ../../values/dev/asset-service.yaml
+        - ../../gitops/values/dev/asset-service.yaml
 
   destination:
     server: https://kubernetes.default.svc

@@ -12,7 +12,7 @@ spec:
     path: helm/incident-service
     helm:
       valueFiles:
-        - ../../values/dev/incident-service.yaml
+        - ../../gitops/values/dev/incident-service.yaml
 
   destination:
     server: https://kubernetes.default.svc

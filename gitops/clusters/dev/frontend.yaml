@@ -12,7 +12,7 @@ spec:
     path: helm/frontend
     helm:
       valueFiles:
-        - ../../values/dev/frontend.yaml
+        - ../../gitops/values/dev/frontend.yaml
 
   destination:
     server: https://kubernetes.default.svc
