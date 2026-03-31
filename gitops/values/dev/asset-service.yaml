@@ -1,6 +1,6 @@
 assetService:
   enabled: true
-  replicaCount: 3
+  replicaCount: 2
   image:
     repository: neeraj2806/asset
     tag: "v1"
