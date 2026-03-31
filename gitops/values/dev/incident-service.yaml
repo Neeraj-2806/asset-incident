@@ -3,4 +3,4 @@ incidentService:
   replicaCount: 2
   image:
     repository: neeraj2806/incident
-    tag: dev
+    tag: "v1"

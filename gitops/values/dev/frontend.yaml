@@ -3,4 +3,4 @@ frontend:
   replicaCount: 1
   image:
     repository: neeraj2806/frontend
-    tag: dev
+    tag: "v1"

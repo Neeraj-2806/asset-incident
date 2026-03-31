@@ -3,4 +3,4 @@ assetService:
   replicaCount: 3
   image:
     repository: neeraj2806/asset
-    tag: dev
+    tag: "v1"
