@@ -1,6 +1,6 @@
 frontend:
   enabled: true
-  replicaCount: 1
+  replicaCount: 2
   image:
     repository: neeraj2806/frontend
     tag: "v1"
